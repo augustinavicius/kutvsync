@@ -1,0 +1,5 @@
+services:
+  ku-calendar-sync:
+    build: .
+    restart: unless-stopped
+    env_file: .env

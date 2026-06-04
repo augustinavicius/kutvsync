@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(openssl s_client *)",
+      "Bash(curl -s -o /tmp/HARICA-GEANT-TLS-R1.cer http://crt.harica.gr/HARICA-GEANT-TLS-R1.cer)",
+      "Read(//tmp/**)",
+      "Bash(openssl x509 *)",
+      "Bash(curl -s -o /tmp/HARICA-TLS-Root-2021-RSA.cer http://crt.harica.gr/HARICA-TLS-Root-2021-RSA.cer)",
+      "Bash(NODE_EXTRA_CA_CERTS=\"C:/Users/augus/Documents/Code Projects/testas2/certs/harica-chain.pem\" node *)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}
