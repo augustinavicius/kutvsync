@@ -6,11 +6,8 @@ node_modules/
 .env.local
 .env.*.local
 
-# Certificates and credentials
-certs/
-*.pem
+# Private credentials
 *.key
-*.crt
 *.p12
 token.json
 credentials.json

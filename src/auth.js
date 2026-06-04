@@ -7,7 +7,7 @@ const logger = require('./logger');
 
 const BASE_URL = 'https://tvarkarasciai.ku.lt';
 
-// KU's server omits its intermediate CA (GEANT TLS RSA 1 / HARICA); supply it explicitly.
+// KU's server omits its intermediate CA (GEANT TLS RSA 1); supply the chain explicitly.
 const httpsAgent = new https.Agent({
   ca: [
     fs.readFileSync(path.join(__dirname, '..', 'certs', 'harica-chain.pem')),
