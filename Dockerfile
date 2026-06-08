@@ -17,6 +17,7 @@ ENV KU_USERNAME="" \
     GOOGLE_CALENDAR_ID="primary" \
     TZ="Europe/Vilnius" \
     SYNC_INTERVAL_MINUTES="60" \
-    LOG_LEVEL="info"
+    LOG_LEVEL="info" \
+    DISCORD_WEBHOOK_URL=""
 
 CMD ["node", "src/index.js"]

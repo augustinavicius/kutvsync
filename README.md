@@ -72,6 +72,17 @@ By default events are written to your primary calendar. To use a dedicated calen
    GOOGLE_CALENDAR_ID=abc123@group.calendar.google.com
    ```
 
+### 6. (Optional) Get Discord notifications
+
+Post a summary of created/updated/deleted events to a Discord channel after each sync:
+
+1. In Discord, open the target channel's **Settings → Integrations → Webhooks → New Webhook**
+2. Copy the **Webhook URL**
+3. Add to `.env`:
+   ```
+   DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/xxxx/xxxx
+   ```
+
 ---
 
 ## Running
@@ -116,6 +127,7 @@ npm start
 | `TZ` | `Europe/Vilnius` | Timezone for formatting and calendar events |
 | `SYNC_INTERVAL_MINUTES` | `60` | How often to sync |
 | `LOG_LEVEL` | `info` | `error` / `warn` / `info` / `debug` |
+| `DISCORD_WEBHOOK_URL` | *(optional)* | If set, posts a summary of created/updated/deleted events to this Discord webhook after each sync |
 
 ---
 

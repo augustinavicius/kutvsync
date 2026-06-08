@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "setup": "node setup.js"
+    "setup": "node setup.js",
+    "test:discord": "node test-discord.js"
   },
   "dependencies": {
     "axios": "^1.7.9",
