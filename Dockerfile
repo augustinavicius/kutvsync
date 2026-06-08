@@ -15,7 +15,7 @@ ENV KU_USERNAME="" \
     GOOGLE_CLIENT_SECRET="" \
     GOOGLE_REFRESH_TOKEN="" \
     GOOGLE_CALENDAR_ID="primary" \
-    TIMEZONE="Europe/Vilnius" \
+    TZ="Europe/Vilnius" \
     SYNC_INTERVAL_MINUTES="60" \
     LOG_LEVEL="info"
 

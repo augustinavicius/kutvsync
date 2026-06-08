@@ -3,7 +3,7 @@ const logger = require('./logger');
 
 const SYNC_TAG = 'ku-calendar-sync';
 const RESERVATION_ID_KEY = 'kuReservationId';
-const TIMEZONE = () => process.env.TIMEZONE || 'Europe/Vilnius';
+const TIMEZONE = () => process.env.TZ || 'Europe/Vilnius';
 const CALENDAR_ID = () => process.env.GOOGLE_CALENDAR_ID || 'primary';
 
 function makeOAuth2Client() {

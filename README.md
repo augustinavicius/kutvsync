@@ -113,7 +113,7 @@ npm start
 | `GOOGLE_CLIENT_SECRET` | *(required)* | OAuth2 client secret |
 | `GOOGLE_REFRESH_TOKEN` | *(required)* | OAuth2 refresh token (from `npm run setup`) |
 | `GOOGLE_CALENDAR_ID` | `primary` | Target Google Calendar ID |
-| `TIMEZONE` | `Europe/Vilnius` | Timezone for formatting and calendar events |
+| `TZ` | `Europe/Vilnius` | Timezone for formatting and calendar events |
 | `SYNC_INTERVAL_MINUTES` | `60` | How often to sync |
 | `LOG_LEVEL` | `info` | `error` / `warn` / `info` / `debug` |
 

@@ -1,7 +1,7 @@
 const { client, ensureAuthenticated } = require('./auth');
 const logger = require('./logger');
 
-const TIMEZONE = process.env.TIMEZONE || 'Europe/Vilnius';
+const TIMEZONE = process.env.TZ || 'Europe/Vilnius';
 
 // Format a Date as YYYY-MM-DDTHH:mm:ss±HH:MM (required by the KU API)
 function toLocalISOString(date) {
