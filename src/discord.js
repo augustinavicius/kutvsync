@@ -1,12 +1,20 @@
 const axios = require('axios');
 const logger = require('./logger');
 
-function webhookUrl() {
-  return process.env.DISCORD_WEBHOOK_URL;
+const WEEKDAY_FMT = new Intl.DateTimeFormat('lt-LT', { weekday: 'long' });
+
+// e.g. "Antradienis, 09/06/2026, 09:00–10:30"
+function formatRange(start, end) {
+  const weekday = WEEKDAY_FMT.format(start);
+  const capitalized = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const dd = String(start.getDate()).padStart(2, '0');
+  const mm = String(start.getMonth() + 1).padStart(2, '0');
+  const hhmm = (d) => d.toTimeString().slice(0, 5);
+  return `${capitalized}, ${dd}/${mm}/${start.getFullYear()}, ${hhmm(start)}–${hhmm(end)}`;
 }
 
 async function postMessage(content) {
-  const url = webhookUrl();
+  const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url) return;
 
   try {
@@ -18,7 +26,7 @@ async function postMessage(content) {
 
 function formatSection(title, lines) {
   if (!lines.length) return '';
-  return `\n\n**${title} (${lines.length})**\n` + lines.map((l) => `${l}`).join('\n');
+  return `\n\n**${title} (${lines.length})**\n` + lines.join('\n');
 }
 
 async function notifySyncChanges({ created, updated, deleted }) {
@@ -28,9 +36,12 @@ async function notifySyncChanges({ created, updated, deleted }) {
   const syncedAt = `<t:${Math.floor(Date.now() / 1000)}:f>`;
 
   let message = `**Tvarkaraščio pakeitimai**\nSinchronizuota ${syncedAt}`
-    + formatSection('Sukurti įvykiai', created.map(({ title, time }) => `„${title}" — ${time}`))
-    + formatSection('Atnaujinti įvykiai', updated.map(({ title, oldTime, newTime }) => `„${title}"\n  Buvo: ${oldTime}\n  Dabar: ${newTime}`))
-    + formatSection('Pašalinti įvykiai', deleted.map(({ title, time }) => `„${title}" — ${time}`));
+    + formatSection('Sukurti įvykiai',   created.map(({ title, start, end }) =>
+        `„${title}" — ${formatRange(start, end)}`))
+    + formatSection('Atnaujinti įvykiai', updated.map(({ title, oldStart, oldEnd, newStart, newEnd }) =>
+        `„${title}"\n  Buvo: ${formatRange(oldStart, oldEnd)}\n  Dabar: ${formatRange(newStart, newEnd)}`))
+    + formatSection('Pašalinti įvykiai',  deleted.map(({ title, start, end }) =>
+        `„${title}" — ${formatRange(start, end)}`));
 
   // Discord caps message content at 2000 characters
   if (message.length > 1900) {
@@ -40,4 +51,4 @@ async function notifySyncChanges({ created, updated, deleted }) {
   await postMessage(message);
 }
 
-module.exports = { postMessage, notifySyncChanges };
+module.exports = { postMessage, notifySyncChanges, formatRange };

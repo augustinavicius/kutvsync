@@ -10,22 +10,6 @@ const {
 const { notifySyncChanges } = require('./discord');
 const logger = require('./logger');
 
-// e.g. "Antradienis, 09/06/2026, 09:00–10:30"
-function formatRange(start, end) {
-  const weekday = new Intl.DateTimeFormat('lt-LT', { weekday: 'long' }).format(start);
-  const capitalized = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-  const dd = String(start.getDate()).padStart(2, '0');
-  const mm = String(start.getMonth() + 1).padStart(2, '0');
-  const time = (d) => d.toTimeString().slice(0, 5);
-  return `${capitalized}, ${dd}/${mm}/${start.getFullYear()}, ${time(start)}–${time(end)}`;
-}
-
-function gcalEventRange(gcalEvent) {
-  const start = new Date(gcalEvent.start?.dateTime ?? gcalEvent.start?.date);
-  const end = new Date(gcalEvent.end?.dateTime ?? gcalEvent.end?.date);
-  return formatRange(start, end);
-}
-
 // Sync window: 1 week back → 4 weeks ahead
 function getSyncWindow() {
   const now = new Date();
@@ -61,20 +45,29 @@ async function runSync() {
 
   for (const [id, reservation] of reservationById) {
     const existing = gcalByReservationId.get(id);
-    const newTime = formatRange(reservation.start, reservation.end);
     if (!existing) {
       await createEvent(reservation);
-      created.push({ title: reservation.title, time: newTime });
+      created.push({ title: reservation.title, start: reservation.start, end: reservation.end });
     } else if (hasChanged(existing, reservation)) {
       await updateEvent(existing.id, reservation);
-      updated.push({ title: reservation.title, oldTime: gcalEventRange(existing), newTime });
+      updated.push({
+        title: reservation.title,
+        oldStart: new Date(existing.start?.dateTime ?? existing.start?.date),
+        oldEnd:   new Date(existing.end?.dateTime   ?? existing.end?.date),
+        newStart: reservation.start,
+        newEnd:   reservation.end,
+      });
     }
   }
 
   for (const [id, gcalEvent] of gcalByReservationId) {
     if (!reservationById.has(id)) {
       await deleteEvent(gcalEvent.id, gcalEvent.summary);
-      deleted.push({ title: gcalEvent.summary, time: gcalEventRange(gcalEvent) });
+      deleted.push({
+        title: gcalEvent.summary,
+        start: new Date(gcalEvent.start?.dateTime ?? gcalEvent.start?.date),
+        end:   new Date(gcalEvent.end?.dateTime   ?? gcalEvent.end?.date),
+      });
     }
   }
 
