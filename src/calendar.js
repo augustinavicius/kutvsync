@@ -1,5 +1,12 @@
 const { google } = require('googleapis');
+const gaxios = require('gaxios');
 const logger = require('./logger');
+
+// googleapis 144 ships node-fetch v2, which throws ERR_STREAM_PREMATURE_CLOSE
+// decoding Google's gzip'd responses on modern Node. Use Node's native fetch
+// (undici) instead, which decodes them correctly.
+const nativeFetch = (...args) => fetch(...args);
+gaxios.instance.defaults.fetchImplementation = nativeFetch;
 
 const SYNC_TAG = 'ku-calendar-sync';
 const RESERVATION_ID_KEY = 'kuReservationId';
@@ -12,6 +19,7 @@ function makeOAuth2Client() {
     process.env.GOOGLE_CLIENT_SECRET
   );
   client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+  client.transporter.defaults.fetchImplementation = nativeFetch;
   return client;
 }
 

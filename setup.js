@@ -5,7 +5,12 @@
  */
 require('dotenv').config();
 const { google } = require('googleapis');
+const gaxios = require('gaxios');
 const http = require('http');
+
+// node-fetch v2 (bundled with googleapis 144) throws ERR_STREAM_PREMATURE_CLOSE
+// decoding Google's gzip'd responses on modern Node; use native fetch instead.
+gaxios.instance.defaults.fetchImplementation = (...args) => fetch(...args);
 const url = require('url');
 const { exec } = require('child_process');
 
@@ -20,6 +25,7 @@ async function main() {
   }
 
   const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI);
+  oauth2Client.transporter.defaults.fetchImplementation = (...args) => fetch(...args);
 
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
